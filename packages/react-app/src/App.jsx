@@ -11,6 +11,14 @@ const darkTheme = createTheme({
       paper: "#1D1E20",
       default: "#1D1E20",
     },
+    primary: {
+      main: "#1E7ADF",
+    },
+  },
+  typography: {
+    button: {
+      textTransform: "none",
+    },
   },
 });
 
