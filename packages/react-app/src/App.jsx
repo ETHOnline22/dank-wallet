@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Router from "./Router";
@@ -26,19 +26,18 @@ const darkTheme = createTheme({
 
 const App = () => {
   useEffect(() => {
-    const initializeWeb3 = async () => {
-      const { web3, web3Biconomy, biconomy } = await getWeb3();
-
-      biconomy
-        .onEvent(biconomy.READY, async () => {
-          // Handle web3 events inside this or after biconomy.READY
-        })
-        .onEvent(biconomy.ERROR, (error, message) => {
-          // Handle error while initializing mexa
-          console.log(error);
-        });
-    };
-    initializeWeb3();
+    // const initializeWeb3 = async () => {
+    //   const { web3, web3Biconomy, biconomy } = await getWeb3();
+    //   biconomy
+    //     .onEvent(biconomy.READY, async () => {
+    //       // Handle web3 events inside this or after biconomy.READY
+    //     })
+    //     .onEvent(biconomy.ERROR, (error, message) => {
+    //       // Handle error while initializing mexa
+    //       console.log(error);
+    //     });
+    // };
+    // initializeWeb3();
   });
 
   console.log(darkTheme);

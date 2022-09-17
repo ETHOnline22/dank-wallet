@@ -45,7 +45,8 @@
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "6.3.0",
     "react-scripts": "4.0.1",
-    "searchico": "^1.2.1"
+    "searchico": "^1.2.1",
+    "web3.storage": "^4.4.0"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.21",

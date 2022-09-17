@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -7,6 +7,8 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { ethers } from "ethers";
+import { uploadToIPFS, retrieveFromIPFS } from "../helpers/ipfs";
 
 const AuthTypes = {
   LOGIN: "Login",
@@ -27,6 +29,40 @@ const AuthPage = () => {
 
   const [createStage, setCreateStage] = useState(CreateStages.USERNAME);
 
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [pin, setPin] = useState("");
+  const [confirmPin, setConfirmPin] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const handleCreateUsername = () => {
+    setCreateStage(CreateStages.PASSWORD);
+  };
+
+  const handleCreatePassword = () => {
+    setCreateStage(CreateStages.PIN);
+  };
+
+  const handleCreateUser = async () => {
+    setLoading(true);
+    console.log("handleCreateUser");
+    const account = ethers.Wallet.createRandom();
+    const encWallet = JSON.parse(await account.encrypt(`${password}-${pin}`));
+    const data = await uploadToIPFS({ publicAddress: account.publicKey, privateData: encWallet });
+    setLoading(false);
+    console.log(data);
+  };
+
+  const handleLogin = async () => {
+    const data = await retrieveFromIPFS(
+      "https://spheron.infura-ipfs.io/ipfs/bafybeiahxba4k2fe4yxa4prkk7tnaux2o4mauaqweovazllz52p6rghlqq/0x04549d641baf10af02548fc8187abd92ff1ea8d9f0037a8b16c4a9a940673dd6012b1392f587e04fe78906ee3dc7772127ad6d50387df23e030ecc1c23e2cc960c.json",
+    );
+    console.log(data);
+    const wallet = ethers.Wallet.fromEncryptedJsonSync(JSON.stringify(data.privateData), `${password}-${pin}`);
+    console.log(wallet);
+  };
+
   return (
     <Box
       sx={{
@@ -45,6 +81,11 @@ const AuthPage = () => {
               onClick={() => {
                 setAuthType(AuthTypes.LOGIN);
                 setCreateStage(CreateStages.USERNAME);
+                setUsername("");
+                setPassword("");
+                setConfirmPassword("");
+                setPin("");
+                setConfirmPin("");
               }}
               style={{
                 backgroundColor: authType === AuthTypes.LOGIN ? "#27282A" : "#1D1E20",
@@ -59,7 +100,15 @@ const AuthPage = () => {
               Login
             </Button>
             <Button
-              onClick={() => setAuthType(AuthTypes.CREATE)}
+              onClick={() => {
+                setAuthType(AuthTypes.CREATE);
+                setCreateStage(CreateStages.USERNAME);
+                setUsername("");
+                setPassword("");
+                setConfirmPassword("");
+                setPin("");
+                setConfirmPin("");
+              }}
               style={{
                 backgroundColor: authType === AuthTypes.CREATE ? "#27282A" : "#1D1E20",
               }}
@@ -76,9 +125,36 @@ const AuthPage = () => {
           <Stack spacing={5} sx={{ width: "100%" }}>
             {authType === AuthTypes.LOGIN ? (
               <>
-                <TextField id="username" label="Username" variant="outlined" />
-                <TextField id="password" label="Password" variant="outlined" />
-                <Button sx={{ height: "48px" }} variant="contained">
+                <TextField
+                  id="username"
+                  label="Username"
+                  variant="outlined"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+                />
+                <TextField
+                  id="password"
+                  label="Password"
+                  variant="outlined"
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                />
+                <TextField
+                  id="pin"
+                  label="pin"
+                  variant="outlined"
+                  type="number"
+                  length="4"
+                  value={pin}
+                  onChange={e => setPin(e.target.value)}
+                />
+                <Button
+                  sx={{ height: "48px" }}
+                  variant="contained"
+                  disabled={!username || !password || !pin}
+                  onClick={handleLogin}
+                >
                   LOGIN
                 </Button>
               </>
@@ -86,8 +162,80 @@ const AuthPage = () => {
               <>
                 {createStage === CreateStages.USERNAME && (
                   <>
-                    <TextField id="username" label="Username" variant="outlined" />
-                    <Button sx={{ height: "48px" }} variant="contained">
+                    <TextField
+                      id="username"
+                      label="Username"
+                      variant="outlined"
+                      value={username}
+                      onChange={e => setUsername(e.target.value)}
+                    />
+                    <Button
+                      sx={{ height: "48px" }}
+                      variant="contained"
+                      disabled={!username}
+                      onClick={handleCreateUsername}
+                    >
+                      CREATE
+                    </Button>
+                  </>
+                )}
+                {createStage === CreateStages.PASSWORD && (
+                  <>
+                    <TextField
+                      id="password"
+                      label="Password"
+                      variant="outlined"
+                      type="password"
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                    />
+                    <TextField
+                      id="confirm-password"
+                      label="Confirm Password"
+                      variant="outlined"
+                      type="password"
+                      value={confirmPassword}
+                      onChange={e => setConfirmPassword(e.target.value)}
+                    />
+                    <Button
+                      sx={{ height: "48px" }}
+                      variant="contained"
+                      disabled={!password || !confirmPassword || password !== confirmPassword}
+                      onClick={handleCreatePassword}
+                    >
+                      CREATE
+                    </Button>
+                  </>
+                )}
+                {createStage === CreateStages.PIN && (
+                  <>
+                    <TextField
+                      id="pin"
+                      label="pin"
+                      variant="outlined"
+                      type="number"
+                      length="4"
+                      value={pin}
+                      onChange={e => setPin(e.target.value)}
+                    />
+                    <TextField
+                      id="confirm-pin"
+                      label="Confirm pin"
+                      variant="outlined"
+                      type="number"
+                      length="4"
+                      value={confirmPin}
+                      onChange={e => setConfirmPin(e.target.value)}
+                    />
+                    <Button
+                      loading={loading}
+                      sx={{ height: "48px" }}
+                      variant="contained"
+                      disabled={
+                        !pin || pin.length !== 4 || !confirmPin || confirmPin.length !== 4 || pin !== confirmPin
+                      }
+                      onClick={handleCreateUser}
+                    >
                       CREATE
                     </Button>
                   </>
