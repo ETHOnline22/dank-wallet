@@ -2,13 +2,14 @@ import { Framework } from "@superfluid-finance/sdk-core"
 
 class SuperFluid {
 
-    constructor(_provider) {
+    constructor(_provider, _chainId) {
         this.provider = _provider
+        this.chainId = _chainId
     }
 
-    async assuperFluidInit() {
+    async superFluidInit() {
         this.sf = await Framework.create({
-            chainId: 137, // you can also use chainId here instead
+            chainId: this.chainId, // you can also use chainId here instead
             provider: this.provider
         });
     }
