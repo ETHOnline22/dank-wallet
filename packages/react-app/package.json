@@ -47,7 +47,6 @@
     "react-router-dom": "6.3.0",
     "react-scripts": "4.0.1",
     "searchico": "^1.2.1",
-    "web3": "^1.8.0",
     "web3-utils": "^1.8.0"
   },
   "devDependencies": {

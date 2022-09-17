@@ -1,8 +1,6 @@
 import { ethers } from "ethers"
 import { ExternalProvider } from '@ethersproject/providers';
 import { Biconomy } from "@biconomy/mexa"
-import Web3 from "web3"
-// "web3"
 
 class EtherProvider {
     constructor() { }
