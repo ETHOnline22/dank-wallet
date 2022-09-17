@@ -219,7 +219,7 @@ const ERC20ABI = [
     name: "Transfer",
     type: "event",
   },
-];
+]
 const DAIABI = [
   {
     inputs: [
@@ -782,7 +782,7 @@ const DAIABI = [
     stateMutability: "view",
     type: "function",
   },
-];
+]
 
 // Mainnet DAI, Optimism and Arbitrium Rollup Contracts with local addresses
 module.exports = {
@@ -798,4 +798,4 @@ module.exports = {
       },
     },
   },
-};
+} 

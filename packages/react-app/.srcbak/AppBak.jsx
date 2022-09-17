@@ -141,7 +141,7 @@ function App(props) {
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
-  // const contractConfig = useContractConfig();
+  // const contractConfig = useContractConfig()
 
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
 
@@ -170,7 +170,7 @@ function App(props) {
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
   /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
+  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth") 
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
 

@@ -1,4 +1,4 @@
-export const DANK_WALLET_ABI = [
+[
     {
         "inputs": [
             {

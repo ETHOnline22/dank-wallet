@@ -1,12 +1,12 @@
-import { ethers } from "ethers";
+import { ethers } from "ethers"
 import web3Utils from 'web3-utils'
-import { DANK_WALLET_ABI } from "./ABI"
+import DANK_WALLET_ABI from "./DankWalletContract.json"
 
 class ContractDankWallet {
     constructor(_contractAddress, _provider) {
         this.provider = _provider
         this.contractAddress = _contractAddress
-        this.contract = new ethers.Contract(this.contractAddress, DANK_WALLET_ABI, this.provider);
+        this.contract = new ethers.Contract(this.contractAddress, DANK_WALLET_ABI, this.provider)
     }
 
     async registerUser(from, userName, publicAddress, ipfsUri, privateKey) {
@@ -15,28 +15,29 @@ class ContractDankWallet {
             from,
             to: this.contractAddress,
             data: this.contract.interface.encodeFunctionData('registerUser', [userName, publicAddress, ipfsUri]),
-            gas: web3Utils.hexToNumber((await this.contract.estimateGas.registerUser(userName, publicAddress, ipfsUri, { from }))._hex),
+            gasLimit: web3Utils.hexToNumber((await this.contract.estimateGas.registerUser(userName, publicAddress, ipfsUri, { from }))._hex),
             gasPrice: web3Utils.hexToNumber((await this.provider.getGasPrice())._hex),
-            value: '0'
-        };
+            value: '0x0'
+        }
 
         const wallet = new ethers.Wallet(privateKey, this.provider)
         const signedTx = await wallet.signTransaction(tx)
 
         const signAndSendTx = await wallet.sendTransaction(tx)
-        return signAndSendTx;
+        return signAndSendTx
 
     }
 
     async createTxn(fnName, arrayOfParams, from) {
+        console.log(...arrayOfParams)
         const tx = {
             from,
             to: this.contractAddress,
-            data: this.contract.interface.encodeFunctionData(`${fnName}`, [...arrayOfParams]),
-            gas: web3Utils.hexToNumber((await this.contract.estimateGas.registerUser(...arrayOfParams, { from }))._hex),
+            data: this.contract.interface.encodeFunctionData(`${fnName}`, arrayOfParams),
+            gasLimit: web3Utils.hexToNumber((await this.contract.estimateGas[fnName](...arrayOfParams, { from }))._hex),
             gasPrice: web3Utils.hexToNumber((await this.provider.getGasPrice())._hex),
-            value: '0'
-        };
+            value: '0x0'
+        }
         return tx
     }
 
@@ -53,6 +54,12 @@ class ContractDankWallet {
 
         return signAndSendTx
     }
+
+    async getViews(fnName, paramsArr) {
+        const data = await this.contract[fnName](...paramsArr)
+        return data
+    }
+
 }
 
 export default ContractDankWallet
