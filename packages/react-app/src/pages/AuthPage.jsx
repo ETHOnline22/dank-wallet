@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -8,7 +8,7 @@ import Grid from "@mui/material/Grid";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { ethers } from "ethers";
-import { uploadToIPFS, retrieveFromIPFS } from "../helpers/ipfs";
+import { uploadToIPFS, retrieveFromIPFS } from "../services/ipfs";
 
 const AuthTypes = {
   LOGIN: "Login",
@@ -60,7 +60,7 @@ const AuthPage = () => {
     );
     console.log(data);
     const wallet = ethers.Wallet.fromEncryptedJsonSync(JSON.stringify(data.privateData), `${password}-${pin}`);
-    console.log(wallet);
+    console.log(wallet.publicKey);
   };
 
   return (
